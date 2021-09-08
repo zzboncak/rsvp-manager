@@ -17,7 +17,9 @@ export const EditPeople: React.FC<
     id,
     updateInvite,
     changes,
-    setChanges
+    setChanges,
+    allowed_extra,
+    extra_confirmed
   } = props;
   function handleDelete() {
     if (
@@ -50,6 +52,21 @@ export const EditPeople: React.FC<
       setChanges(changes + 1);
     });
   }
+
+  function handleGivePlusOne() {
+    fetch(`${API_ENDPOINT}/people/update/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({ allowed_extra: true })
+    }).then((res) => {
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      setChanges(changes + 1);
+    });
+  }
   return (
     <article>
       <h3>
@@ -73,6 +90,20 @@ export const EditPeople: React.FC<
           {RSVP_Options.DECLINE}
         </option>
       </select>
+      <br />
+      {!allowed_extra && (
+        <button onClick={() => handleGivePlusOne()}>
+          Give a plus one?
+        </button>
+      )}
+      {allowed_extra && (
+        <>
+          <p>
+            Plus one status:{" "}
+            {extra_confirmed ? "Coming" : "Not coming"}
+          </p>
+        </>
+      )}
       <p>
         REMOVE <span onClick={() => handleDelete()}>😭</span>
       </p>

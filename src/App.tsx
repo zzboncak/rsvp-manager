@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, Switch, Route } from "react-router-dom";
+import { AddInvite } from "./AddInvite";
 import "./App.css";
 import { EditInvite } from "./EditeInvite";
 import { Overview } from "./Overview";
@@ -15,6 +16,7 @@ function App(): JSX.Element {
       </nav>
 
       <Switch>
+        <Route path="/add-invites" component={AddInvite} />
         <Route path="/edit-invite/:id" component={EditInvite} />
         <Route exact path="/" component={Overview} />
       </Switch>

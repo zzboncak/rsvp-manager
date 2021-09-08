@@ -13,6 +13,7 @@ export type Invite = {
   id: number;
   family_name: string;
   head_of_house: string;
+  keyword: string;
 };
 
 export type InviteRequest = Omit<Invite, "id">;
@@ -27,7 +28,7 @@ export type Person = {
   rsvp: RSVP_Options;
   person_age: Age;
   allowed_extra?: boolean;
-  extra_confirmed?: boolean;
+  extra_confirmed?: RSVP_Options;
 };
 
 export type PersonRequest = Omit<Person, "id">;
