@@ -10,6 +10,7 @@ export const EditInvite: React.FC<RouteComponentProps> = ({
 }) => {
   const [people, setPeople] = useState<Person[]>([]);
   const [isAddFormVisible, setVisible] = useState<boolean>();
+  const [changes, setChanges] = useState<number>(0);
 
   function closeForm() {
     setVisible(false);
@@ -28,8 +29,11 @@ export const EditInvite: React.FC<RouteComponentProps> = ({
         }
         return res.json();
       })
-      .then((people: Person[]) => setPeople(people));
-  }, [isAddFormVisible]);
+      .then((people: Person[]) => {
+        const sortedPeople = people.sort((a, b) => a.id - b.id);
+        setPeople(sortedPeople);
+      });
+  }, [isAddFormVisible, changes]);
   return (
     <>
       <section>
@@ -38,6 +42,8 @@ export const EditInvite: React.FC<RouteComponentProps> = ({
             {...person}
             updateInvite={removePerson}
             key={person.id}
+            changes={changes}
+            setChanges={setChanges}
           />
         ))}
       </section>

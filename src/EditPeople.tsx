@@ -1,9 +1,13 @@
 import React from "react";
 import { API_ENDPOINT } from "./config";
-import { Person } from "./types";
+import { Person, RSVP_Options } from "./types";
 
 export const EditPeople: React.FC<
-  Person & { updateInvite: (personId: number) => void }
+  Person & {
+    updateInvite: (personId: number) => void;
+    changes: number;
+    setChanges: React.Dispatch<React.SetStateAction<number>>;
+  }
 > = (props) => {
   const {
     last_name,
@@ -11,7 +15,9 @@ export const EditPeople: React.FC<
     person_age,
     rsvp,
     id,
-    updateInvite
+    updateInvite,
+    changes,
+    setChanges
   } = props;
   function handleDelete() {
     if (
@@ -29,12 +35,44 @@ export const EditPeople: React.FC<
       });
     }
   }
+
+  function handleRSVPChange(rsvpStatus: RSVP_Options) {
+    fetch(`${API_ENDPOINT}/people/update/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({ rsvp: rsvpStatus })
+    }).then((res) => {
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      setChanges(changes + 1);
+    });
+  }
   return (
     <article>
       <h3>
-        {first_name} {last_name} {person_age}
+        {first_name} {last_name} <i>{person_age}</i>
       </h3>
-      <p>RSVP Status: {rsvp}</p>
+      <label htmlFor="rsvp">RSVP Status: </label>
+      <select
+        name="rsvp"
+        value={rsvp}
+        onChange={(e) =>
+          handleRSVPChange(e.target.value as RSVP_Options)
+        }
+      >
+        <option value={RSVP_Options.NO_RESPONSE}>
+          {RSVP_Options.NO_RESPONSE}
+        </option>
+        <option value={RSVP_Options.WILL_ATTEND}>
+          {RSVP_Options.WILL_ATTEND}
+        </option>
+        <option value={RSVP_Options.DECLINE}>
+          {RSVP_Options.DECLINE}
+        </option>
+      </select>
       <p>
         REMOVE <span onClick={() => handleDelete()}>😭</span>
       </p>
