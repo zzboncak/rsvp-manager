@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { API_ENDPOINT } from "./config";
-import { Invite } from "./types";
+import { Invite, Person } from "./types";
 
 export const InviteRow: React.FC<Invite> = (invite) => {
   const [peopleCount, setPeopleCount] = useState(0);
@@ -15,7 +15,15 @@ export const InviteRow: React.FC<Invite> = (invite) => {
         }
         return res.json();
       })
-      .then((people) => setPeopleCount(people.length));
+      .then((people: Person[]) => {
+        const totalCount = people.reduce((total, person) => {
+          if (person.allowed_extra) {
+            return total + 2;
+          }
+          return total + 1;
+        }, 0);
+        setPeopleCount(totalCount);
+      });
   }, []);
 
   return (
