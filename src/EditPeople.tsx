@@ -53,13 +53,13 @@ export const EditPeople: React.FC<
     });
   }
 
-  function handleGivePlusOne() {
+  function handleGivePlusOne(value: boolean) {
     fetch(`${API_ENDPOINT}/people/update/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json"
       },
-      body: JSON.stringify({ allowed_extra: true })
+      body: JSON.stringify({ allowed_extra: value })
     }).then((res) => {
       if (!res.ok) {
         throw new Error(res.statusText);
@@ -92,7 +92,7 @@ export const EditPeople: React.FC<
       </select>
       <br />
       {!allowed_extra && (
-        <button onClick={() => handleGivePlusOne()}>
+        <button onClick={() => handleGivePlusOne(true)}>
           Give a plus one?
         </button>
       )}
@@ -100,8 +100,11 @@ export const EditPeople: React.FC<
         <>
           <p>
             Plus one status:{" "}
-            {extra_confirmed ? "Coming" : "Not coming"}
+            {extra_confirmed ?? RSVP_Options.NO_RESPONSE}
           </p>
+          <button onClick={() => handleGivePlusOne(false)}>
+            Remove Plus One
+          </button>
         </>
       )}
       <p>

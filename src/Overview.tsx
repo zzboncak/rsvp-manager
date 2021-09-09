@@ -27,7 +27,13 @@ export const Overview: React.FC = () => {
         return res.json();
       })
       .then((people: Person[]) => {
-        setTotalCount(people.length);
+        const totalCount = people.reduce((total, person) => {
+          if (person.allowed_extra) {
+            return total + 2;
+          }
+          return total + 1;
+        }, 0);
+        setTotalCount(totalCount);
         setConfirmedCount(
           people.filter(
             (person) => person.rsvp === RSVP_Options.WILL_ATTEND
