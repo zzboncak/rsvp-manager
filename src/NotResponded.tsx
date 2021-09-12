@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Person, RSVP_Options } from "./types";
-import { fetchPeople } from "./utilities";
+import { fetchAllPeople } from "./utilities";
 
 export const NotResponded: React.FC = () => {
   const [people, setPeople] = useState<Person[]>([]);
   useEffect(() => {
-    fetchPeople().then((people) => {
+    fetchAllPeople().then((people) => {
       const notResponded = people.filter(
         (person) =>
           person.rsvp === RSVP_Options.NO_RESPONSE ||

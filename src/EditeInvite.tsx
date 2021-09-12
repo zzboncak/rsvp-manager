@@ -20,9 +20,9 @@ export const EditInvite: React.FC<RouteComponentProps> = ({
     const newList = people.filter((person) => person.id !== personId);
     setPeople(newList);
   }
-  const { id } = match.params as { id: number };
+  const { keyword } = match.params as { keyword: number };
   useEffect(() => {
-    fetch(`${API_ENDPOINT}/people/${id}`)
+    fetch(`${API_ENDPOINT}/people/${keyword}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText);
@@ -36,6 +36,7 @@ export const EditInvite: React.FC<RouteComponentProps> = ({
   }, [isAddFormVisible, changes]);
   return (
     <>
+      <h3>Family Keyword: {keyword}</h3>
       <section>
         {people.map((person) => (
           <EditPeople
@@ -49,7 +50,7 @@ export const EditInvite: React.FC<RouteComponentProps> = ({
       </section>
       {isAddFormVisible && (
         <AddPersonForm
-          family_id={id}
+          family_id={people[0]?.family_id}
           last_name={people[0]?.last_name ?? ""}
           closeForm={closeForm}
         />

@@ -6,9 +6,9 @@ import { Invite, Person } from "./types";
 export const InviteRow: React.FC<Invite> = (invite) => {
   const [peopleCount, setPeopleCount] = useState(0);
 
-  const { id } = invite;
+  const { keyword } = invite;
   useEffect(() => {
-    fetch(`${API_ENDPOINT}/people/${id}`)
+    fetch(`${API_ENDPOINT}/people/${keyword}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText);
@@ -27,7 +27,7 @@ export const InviteRow: React.FC<Invite> = (invite) => {
   }, []);
 
   return (
-    <Link to={`/edit-invite/${id}`}>
+    <Link to={`/edit-invite/${keyword}`}>
       <article>
         <p>
           The {invite.head_of_house} {invite.family_name} family{" "}

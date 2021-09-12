@@ -20,7 +20,7 @@ function App(): JSX.Element {
       <Switch>
         <Route path="/not-responded" component={NotResponded} />
         <Route path="/add-invites" component={AddInvite} />
-        <Route path="/edit-invite/:id" component={EditInvite} />
+        <Route path="/edit-invite/:keyword" component={EditInvite} />
         <Route exact path="/" component={Overview} />
       </Switch>
     </div>
