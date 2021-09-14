@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { API_ENDPOINT } from "./config";
 import { InviteRow } from "./InviteRow";
 import { Invite, Person, RSVP_Options } from "./types";
+import { fetchAllPeople, fetchInvites } from "./utilities";
 
 export const Overview: React.FC = () => {
   const [invites, setInvites] = useState<Invite[]>([]);
@@ -9,44 +9,38 @@ export const Overview: React.FC = () => {
   const [confirmedCount, setConfirmedCount] = useState(0);
   const [declinedCount, setDeclinedCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [forceRefresh, setRefresh] = useState(0);
 
   useEffect(() => {
-    fetch(`${API_ENDPOINT}/invites`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.statusText);
-        }
-        return res.json();
-      })
-      .then((invites) => setInvites(invites));
+    fetchInvites().then((invites) => setInvites(invites));
 
-    fetch(`${API_ENDPOINT}/people`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.statusText);
+    fetchAllPeople().then((people: Person[]) => {
+      const totalCount = people.reduce((total, person) => {
+        if (person.allowed_extra) {
+          return total + 2;
         }
-        return res.json();
-      })
-      .then((people: Person[]) => {
-        const totalCount = people.reduce((total, person) => {
-          if (person.allowed_extra) {
-            return total + 2;
-          }
-          return total + 1;
-        }, 0);
-        setTotalCount(totalCount);
-        setConfirmedCount(
-          people.filter(
-            (person) => person.rsvp === RSVP_Options.WILL_ATTEND
-          ).length
-        );
-        setDeclinedCount(
-          people.filter(
-            (person) => person.rsvp === RSVP_Options.DECLINE
-          ).length
-        );
-      });
-  }, []);
+        return total + 1;
+      }, 0);
+      setTotalCount(totalCount);
+      setConfirmedCount(
+        people.filter(
+          (person) => person.rsvp === RSVP_Options.WILL_ATTEND
+        ).length
+      );
+      setDeclinedCount(
+        people.filter(
+          (person) => person.rsvp === RSVP_Options.DECLINE
+        ).length
+      );
+    });
+  }, [forceRefresh]);
+
+  function removeInvite(index: number) {
+    const newInvites = invites.filter(
+      (invite) => invite.id !== index
+    );
+    setInvites(newInvites);
+  }
 
   const invitesToShow = invites.length > 0;
 
@@ -74,7 +68,15 @@ export const Overview: React.FC = () => {
               .toLowerCase()
               .includes(searchTerm.toLowerCase())
           )
-          .map((invite) => <InviteRow {...invite} key={invite.id} />)}
+          .map((invite) => (
+            <InviteRow
+              {...invite}
+              key={invite.id}
+              removeInvite={removeInvite}
+              forceRefresh={forceRefresh}
+              setRefresh={setRefresh}
+            />
+          ))}
     </main>
   );
 };

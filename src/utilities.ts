@@ -28,6 +28,29 @@ export function fetchInvites(): Promise<Invite[]> {
     .then((data: Invite[]) => data);
 }
 
+export function fetchInviteAndPeople(
+  keyword: string
+): Promise<[Invite, Person[]]> {
+  return Promise.all([
+    fetch(`${API_ENDPOINT}/invites/${keyword.toLowerCase()}`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+        return res.json();
+      })
+      .then((data: Invite[]) => data[0]),
+    fetch(`${API_ENDPOINT}/people/${keyword.toLowerCase()}`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+        return res.json();
+      })
+      .then((data: Person[]) => data)
+  ]);
+}
+
 export function updatePerson(
   personId: number,
   fieldsToUpdate: Partial<PersonRequest>

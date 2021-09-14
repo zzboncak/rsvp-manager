@@ -3,10 +3,24 @@ import { Link } from "react-router-dom";
 import { API_ENDPOINT } from "./config";
 import { Invite, Person } from "./types";
 
-export const InviteRow: React.FC<Invite> = (invite) => {
+export const InviteRow: React.FC<
+  Invite & {
+    removeInvite: (index: number) => void;
+    forceRefresh: number;
+    setRefresh: React.Dispatch<React.SetStateAction<number>>;
+  }
+> = (props) => {
   const [peopleCount, setPeopleCount] = useState(0);
 
-  const { keyword } = invite;
+  const {
+    keyword,
+    removeInvite,
+    family_name,
+    head_of_house,
+    id,
+    forceRefresh,
+    setRefresh
+  } = props;
   useEffect(() => {
     fetch(`${API_ENDPOINT}/people/${keyword}`)
       .then((res) => {
@@ -25,15 +39,34 @@ export const InviteRow: React.FC<Invite> = (invite) => {
         setPeopleCount(totalCount);
       });
   }, []);
+  function handleRemoveInvite() {
+    if (
+      window.confirm(
+        "Are you sure you want to remove this family? This action cannot be undone and will also delete all the people contained within the family. Continue?"
+      )
+    ) {
+      fetch(`${API_ENDPOINT}/invites/delete/${id}`, {
+        method: "DELETE"
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+        setRefresh(forceRefresh + 1);
+        removeInvite(id);
+      });
+    }
+  }
 
   return (
-    <Link to={`/edit-invite/${keyword}`}>
-      <article>
-        <p>
-          The {invite.head_of_house} {invite.family_name} family{" "}
-          {peopleCount}
-        </p>
-      </article>
-    </Link>
+    <>
+      <Link to={`/edit-invite/${keyword}`}>
+        <article>
+          <p>
+            The {head_of_house} {family_name} family {peopleCount}
+          </p>
+        </article>
+      </Link>
+      <span onClick={() => handleRemoveInvite()}>REMOVE 🗑</span>
+    </>
   );
 };
