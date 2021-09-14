@@ -8,6 +8,7 @@ export const Overview: React.FC = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [confirmedCount, setConfirmedCount] = useState(0);
   const [declinedCount, setDeclinedCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
     fetch(`${API_ENDPOINT}/invites`)
@@ -59,10 +60,21 @@ export const Overview: React.FC = () => {
         Total Not Responded:{" "}
         {totalCount - confirmedCount - declinedCount}
       </h3>
+      <label htmlFor="search-term">Search Invites: </label>
+      <input
+        type="text"
+        name="search-term"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
       {invitesToShow &&
-        invites.map((invite) => (
-          <InviteRow {...invite} key={invite.id} />
-        ))}
+        invites
+          .filter((invite) =>
+            invite.family_name
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          )
+          .map((invite) => <InviteRow {...invite} key={invite.id} />)}
     </main>
   );
 };
