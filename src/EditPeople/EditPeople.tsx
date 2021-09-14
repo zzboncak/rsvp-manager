@@ -1,6 +1,7 @@
 import React from "react";
-import { API_ENDPOINT } from "./config";
-import { Person, RSVP_Options } from "./types";
+import { API_ENDPOINT } from "../config";
+import { Person, RSVP_Options } from "../types";
+import "./EditPeople.css";
 
 export const EditPeople: React.FC<
   Person & {
@@ -68,46 +69,62 @@ export const EditPeople: React.FC<
     });
   }
   return (
-    <article>
-      <h3>
-        {first_name} {last_name} <i>{person_age}</i>
+    <article className="edit-person">
+      <h3 className="edit-person-header">
+        {first_name} {last_name}{" "}
+        <i className="person-age">{person_age}</i>
       </h3>
-      <label htmlFor="rsvp">RSVP Status: </label>
+      <label htmlFor="rsvp" className="rsvp-label">
+        RSVP Status:{" "}
+      </label>
       <select
+        className="rsvp-select"
         name="rsvp"
         value={rsvp}
         onChange={(e) =>
           handleRSVPChange(e.target.value as RSVP_Options)
         }
       >
-        <option value={RSVP_Options.NO_RESPONSE}>
+        <option
+          className="rsvp-option"
+          value={RSVP_Options.NO_RESPONSE}
+        >
           {RSVP_Options.NO_RESPONSE}
         </option>
-        <option value={RSVP_Options.WILL_ATTEND}>
+        <option
+          className="rsvp-option"
+          value={RSVP_Options.WILL_ATTEND}
+        >
           {RSVP_Options.WILL_ATTEND}
         </option>
-        <option value={RSVP_Options.DECLINE}>
+        <option className="rsvp-option" value={RSVP_Options.DECLINE}>
           {RSVP_Options.DECLINE}
         </option>
       </select>
       <br />
       {!allowed_extra && (
-        <button onClick={() => handleGivePlusOne(true)}>
+        <button
+          className="button give-plus-one-button"
+          onClick={() => handleGivePlusOne(true)}
+        >
           Give a plus one?
         </button>
       )}
       {allowed_extra && (
         <>
-          <p>
+          <p className="plus-one-status-text">
             Plus one status:{" "}
             {extra_confirmed ?? RSVP_Options.NO_RESPONSE}
           </p>
-          <button onClick={() => handleGivePlusOne(false)}>
+          <button
+            className="button remove-plus-one-button"
+            onClick={() => handleGivePlusOne(false)}
+          >
             Remove Plus One
           </button>
         </>
       )}
-      <p>
+      <p className="button remove-person-button">
         REMOVE <span onClick={() => handleDelete()}>😭</span>
       </p>
     </article>

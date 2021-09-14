@@ -1,0 +1,15 @@
+.edit-person {
+  border: 1px solid black;
+  width: 80vw;
+  border-radius: 15px;
+  margin: 25px auto;
+  max-width: 500px;
+}
+
+.edit-person > * {
+  margin: 15px 0;
+}
+
+.edit-person .person-age {
+  font-weight: 400;
+}
