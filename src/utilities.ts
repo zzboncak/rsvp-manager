@@ -1,5 +1,10 @@
 import { API_ENDPOINT } from "./config";
-import { Invite, Person, PersonRequest } from "./types";
+import {
+  Invite,
+  InviteUpdateRequest,
+  Person,
+  PersonRequest
+} from "./types";
 
 export function fetchAllPeople(): Promise<Person[]> {
   return fetch(`${API_ENDPOINT}/people`)
@@ -41,4 +46,26 @@ export function updatePerson(
       return res.json();
     })
     .then((person: Person) => person);
+}
+
+export function updateInvite(
+  inviteId: number,
+  fieldsToUpdate: Partial<InviteUpdateRequest>
+): Promise<Invite> {
+  return fetch(`${API_ENDPOINT}/invites/update/${inviteId}`, {
+    method: "PATCH",
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify(fieldsToUpdate)
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      return res.json();
+    })
+    .then((invite: Invite) => {
+      return invite;
+    });
 }

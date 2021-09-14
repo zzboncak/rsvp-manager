@@ -14,11 +14,16 @@ export type Invite = {
   family_name: string;
   head_of_house: string;
   keyword: string;
+  dietary_restrictions?: string | null;
+  favorite_song?: string | null;
 };
 
 export type InviteRequest = Omit<Invite, "id">;
 
-export type InviteUpdateRequest = Partial<InviteRequest>;
+export type InviteUpdateRequest = Partial<InviteRequest> & {
+  reset_diet?: boolean;
+  reset_song?: boolean;
+};
 
 export type Person = {
   id: number;
