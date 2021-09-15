@@ -94,7 +94,12 @@ export const EditPeople: React.FC<
         <h3 className="edit-person-header">
           {first_name} {last_name}{" "}
           <i className="person-age">{person_age}</i>{" "}
-          <span onClick={() => setEditMode(!editMode)}>✒️</span>
+          <span
+            onClick={() => setEditMode(!editMode)}
+            className="click"
+          >
+            ✒️
+          </span>
         </h3>
       )}
       {editMode && (
@@ -177,7 +182,10 @@ export const EditPeople: React.FC<
         </>
       )}
       <p className="button remove-person-button">
-        REMOVE <span onClick={() => handleDelete()}>😭</span>
+        REMOVE{" "}
+        <span onClick={() => handleDelete()} className="click">
+          😭
+        </span>
       </p>
     </article>
   );
