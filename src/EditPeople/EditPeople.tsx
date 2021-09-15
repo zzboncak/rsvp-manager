@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { API_ENDPOINT } from "../config";
-import { Person, RSVP_Options } from "../types";
+import { Age, Person, RSVP_Options } from "../types";
+import { updatePerson } from "../utilities";
 import "./EditPeople.css";
 
 export const EditPeople: React.FC<
@@ -10,6 +11,10 @@ export const EditPeople: React.FC<
     setChanges: React.Dispatch<React.SetStateAction<number>>;
   }
 > = (props) => {
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [editedFirstName, setFirstName] = useState(props.first_name);
+  const [editedLastName, setLastName] = useState(props.last_name);
+  const [editedAge, setAge] = useState<Age>(props.person_age);
   const {
     last_name,
     first_name,
@@ -22,6 +27,7 @@ export const EditPeople: React.FC<
     allowed_extra,
     extra_confirmed
   } = props;
+
   function handleDelete() {
     if (
       window.confirm(
@@ -68,12 +74,58 @@ export const EditPeople: React.FC<
       setChanges(changes + 1);
     });
   }
+
+  function handleEdit() {
+    updatePerson(id, {
+      first_name: editedFirstName,
+      last_name: editedLastName,
+      person_age: editedAge
+    }).then((person) => {
+      setAge(person.person_age);
+      setFirstName(person.first_name);
+      setLastName(person.last_name);
+      setEditMode(false);
+      setChanges(changes + 1);
+    });
+  }
   return (
     <article className="edit-person">
-      <h3 className="edit-person-header">
-        {first_name} {last_name}{" "}
-        <i className="person-age">{person_age}</i>
-      </h3>
+      {!editMode && (
+        <h3 className="edit-person-header">
+          {first_name} {last_name}{" "}
+          <i className="person-age">{person_age}</i>{" "}
+          <span onClick={() => setEditMode(!editMode)}>✒️</span>
+        </h3>
+      )}
+      {editMode && (
+        <>
+          <input
+            type="text"
+            name="edit-first-name"
+            value={editedFirstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <input
+            type="text"
+            name="edit-first-name"
+            value={editedLastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+          <select
+            name="person_age"
+            value={editedAge}
+            onChange={(e) => setAge(e.target.value as Age)}
+            required
+          >
+            <option value={Age.ADULT}>{Age.ADULT}</option>
+            <option value={Age.CHILD}>{Age.CHILD}</option>
+          </select>
+          <button onClick={() => handleEdit()}>
+            Make them changes
+          </button>
+          <br />
+        </>
+      )}
       <label htmlFor="rsvp" className="rsvp-label">
         RSVP Status:{" "}
       </label>
