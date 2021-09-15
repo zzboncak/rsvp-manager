@@ -16,3 +16,8 @@
 .App-link {
   color: #61dafb;
 }
+
+button,
+.click {
+  cursor: pointer;
+}

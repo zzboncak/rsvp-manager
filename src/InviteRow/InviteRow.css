@@ -1,0 +1,16 @@
+.invite-row {
+  display: grid;
+  justify-content: space-around;
+  grid-template-columns: 230px 120px 150px;
+  grid-column-gap: 20px;
+  max-width: 600px;
+  margin: 10px auto;
+}
+
+.invite-row .invite-row-people-count {
+  text-decoration: none;
+}
+
+.remove-invite {
+  cursor: pointer;
+}
