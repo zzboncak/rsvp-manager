@@ -110,7 +110,9 @@ export const AddPersonForm: React.FC<{
           <option value="Yes">Yes</option>
         </select>
       </div>
-      <button type="submit">Add</button>
+      <button type="submit" disabled={first_name.length === 0}>
+        Add
+      </button>
     </form>
   );
 };
