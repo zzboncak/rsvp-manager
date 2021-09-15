@@ -63,10 +63,14 @@ export const Overview: React.FC = () => {
       />
       {invitesToShow &&
         invites
-          .filter((invite) =>
-            invite.family_name
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
+          .filter(
+            (invite) =>
+              invite.family_name
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              invite.head_of_house
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
           )
           .map((invite) => (
             <InviteRow
