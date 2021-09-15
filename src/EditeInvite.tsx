@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router";
-import { AddPersonForm } from "./AddPersonForm";
+import { AddPersonForm } from "./AddPersonForm/AddPersonForm";
 import { API_ENDPOINT } from "./config";
 import { EditPeople } from "./EditPeople/EditPeople";
 import { Person } from "./types";
