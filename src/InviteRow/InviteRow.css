@@ -1,0 +1,15 @@
+.invite-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  max-width: 600px;
+  margin: 10px auto;
+}
+
+.invite-row .invite-row-people-count {
+  text-decoration: none;
+}
+
+.remove-invite {
+  cursor: pointer;
+}

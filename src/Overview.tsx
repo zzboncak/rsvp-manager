@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { InviteRow } from "./InviteRow";
+import { InviteRow } from "./InviteRow/InviteRow";
 import { Invite, Person, RSVP_Options } from "./types";
 import { fetchAllPeople, fetchInvites } from "./utilities";
 

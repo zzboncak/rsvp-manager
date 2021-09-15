@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { API_ENDPOINT } from "./config";
-import { Invite, Person } from "./types";
+import { API_ENDPOINT } from "../config";
+import { Invite, Person } from "../types";
+import "./InviteRow.css";
 
 export const InviteRow: React.FC<
   Invite & {
@@ -58,15 +59,19 @@ export const InviteRow: React.FC<
   }
 
   return (
-    <>
+    <article className="invite-row">
       <Link to={`/edit-invite/${keyword}`}>
-        <article>
-          <p>
-            The {head_of_house} {family_name} family {peopleCount}
-          </p>
-        </article>
+        The {head_of_house} {family_name} family{" "}
       </Link>
-      <span onClick={() => handleRemoveInvite()}>REMOVE 🗑</span>
-    </>
+      <span className="invite-row-people-count">
+        People Count: {peopleCount}
+      </span>
+      <button
+        onClick={() => handleRemoveInvite()}
+        className="remove-invite"
+      >
+        REMOVE INVITE: 🗑
+      </button>
+    </article>
   );
 };
