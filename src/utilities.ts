@@ -32,7 +32,7 @@ export function fetchInviteAndPeople(
   keyword: string
 ): Promise<[Invite, Person[]]> {
   return Promise.all([
-    fetch(`${API_ENDPOINT}/invites/${keyword.toLowerCase()}`)
+    fetch(`${API_ENDPOINT}/invites/${keyword}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText);
@@ -40,7 +40,7 @@ export function fetchInviteAndPeople(
         return res.json();
       })
       .then((data: Invite[]) => data[0]),
-    fetch(`${API_ENDPOINT}/people/${keyword.toLowerCase()}`)
+    fetch(`${API_ENDPOINT}/people/${keyword}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText);
