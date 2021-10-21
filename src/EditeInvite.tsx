@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, useHistory } from "react-router";
 import { AddPersonForm } from "./AddPersonForm/AddPersonForm";
 import { API_ENDPOINT } from "./config";
 import { EditPeople } from "./EditPeople/EditPeople";
-import { Person } from "./types";
+import { Invite, Person } from "./types";
+import { fetchInviteAndPeople } from "./utilities";
 
 export const EditInvite: React.FC<RouteComponentProps> = ({
   match
@@ -11,6 +12,13 @@ export const EditInvite: React.FC<RouteComponentProps> = ({
   const [people, setPeople] = useState<Person[]>([]);
   const [isAddFormVisible, setVisible] = useState<boolean>();
   const [changes, setChanges] = useState<number>(0);
+  const [editKeyword, setEditKeyword] = useState<boolean>(false);
+  const { keyword } = match.params as { keyword: string };
+  const [updatedKeyword, setUpdatedKeyword] = useState<string>(
+    keyword
+  );
+  const [invite, setInvite] = useState<Invite | undefined>(undefined);
+  const history = useHistory();
 
   function closeForm() {
     setVisible(false);
@@ -20,23 +28,50 @@ export const EditInvite: React.FC<RouteComponentProps> = ({
     const newList = people.filter((person) => person.id !== personId);
     setPeople(newList);
   }
-  const { keyword } = match.params as { keyword: number };
+
+  function handleUpdateKeyword() {
+    fetch(`${API_ENDPOINT}/invites/update/${invite?.id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({ keyword: updatedKeyword })
+    }).then((res) => {
+      if (!res.ok) {
+        throw new Error("Disaster");
+      }
+      setEditKeyword(false);
+      history.push(`/edit-invite/${updatedKeyword}`);
+    });
+  }
   useEffect(() => {
-    fetch(`${API_ENDPOINT}/people/${keyword}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.statusText);
-        }
-        return res.json();
-      })
-      .then((people: Person[]) => {
-        const sortedPeople = people.sort((a, b) => a.id - b.id);
-        setPeople(sortedPeople);
-      });
+    fetchInviteAndPeople(keyword).then(([invite, people]) => {
+      const sortedPeople = people.sort((a, b) => a.id - b.id);
+      setPeople(sortedPeople);
+      setInvite(invite);
+    });
   }, [isAddFormVisible, changes]);
   return (
     <>
-      <h3>Family Keyword: {keyword}</h3>
+      {!editKeyword && (
+        <h3>
+          Family Keyword:{" "}
+          <span onClick={() => setEditKeyword(true)}>{keyword}</span>
+        </h3>
+      )}
+      {editKeyword && (
+        <h3>
+          Family Keyword:{" "}
+          <input
+            type="text"
+            value={updatedKeyword}
+            onChange={(e) => setUpdatedKeyword(e.target.value)}
+          />
+          <button onClick={() => handleUpdateKeyword()}>
+            Update
+          </button>
+        </h3>
+      )}
       <section>
         {people.map((person) => (
           <EditPeople
