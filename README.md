@@ -1,17 +1,10 @@
-# A Boilerplate React Project
+# A UI for managing RSVPs
 
-With [Zack Zboncak's](https://github.com/zzboncak) preferred settings
+This project supports the user facing wedding website. It is a React/TypeScript project that communicates with the same database that hosts the RSVPs of the wedding.
 
-## To create a new project
+## To run this project locally
 
-1. Clone this repository with your project name
-
-- ex. `git clone https://github.com/zzboncak/react-typescript-template.git my-new-project`
-
-2. Go into the cloned project `cd my-new-project`
-
-3. Install all the dependencies `yarn install`
-
-4. If you haven't already, set up VS Code with the ESLint and Prettier extensions
-
-5. To run your new React project, `yarn start`
+- Clone this repo
+- `cd` into it
+- run `yarn install`
+- run `yarn start`
