@@ -2,18 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Person, RSVP_Options } from "./types";
 import { fetchAllPeople } from "./utilities";
 
-export const NotResponded: React.FC = () => {
+export const PeopleStatus: React.FC<{ status: RSVP_Options }> = ({
+  status
+}) => {
   const [people, setPeople] = useState<Person[]>([]);
   useEffect(() => {
     fetchAllPeople().then((people) => {
-      const notResponded = people.filter(
+      const peopleToDisplay = people.filter(
         (person) =>
-          person.rsvp === RSVP_Options.NO_RESPONSE ||
-          person.extra_confirmed === RSVP_Options.NO_RESPONSE
+          person.rsvp === status || person.extra_confirmed === status
       );
-      setPeople(notResponded);
+      setPeople(peopleToDisplay);
     });
-  }, []);
+  }, [status]);
   return (
     <section>
       {people.map((person) => {
