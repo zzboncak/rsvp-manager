@@ -12,7 +12,10 @@ export const PeopleStatus: React.FC<{ status: RSVP_Options }> = ({
         (person) =>
           person.rsvp === status || person.extra_confirmed === status
       );
-      setPeople(peopleToDisplay);
+      const sortedPeople = peopleToDisplay.sort(
+        (a, b) => a.family_id - b.family_id
+      );
+      setPeople(sortedPeople);
     });
   }, [status]);
   return (
