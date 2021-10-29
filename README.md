@@ -8,3 +8,4 @@ This project supports the user facing wedding website. It is a React/TypeScript 
 - `cd` into it
 - run `yarn install`
 - run `yarn start`
+   
