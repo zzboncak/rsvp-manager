@@ -83,6 +83,13 @@ export const EditInvite: React.FC<RouteComponentProps> = ({
           />
         ))}
       </section>
+      <section>
+        <h3>Family responses</h3>
+        <h4>Dietary Restrictions</h4>
+        <p>{invite?.dietary_restrictions}</p>
+        <h4>Song that will get them to dance</h4>
+        <p>{invite?.favorite_song}</p>
+      </section>
       {isAddFormVisible && (
         <AddPersonForm
           family_id={people[0]?.family_id}

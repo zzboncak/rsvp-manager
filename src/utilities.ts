@@ -51,6 +51,12 @@ export function fetchInviteAndPeople(
   ]);
 }
 
+export function fetchAllInvitesAndPeople(): Promise<
+  [Invite[], Person[]]
+> {
+  return Promise.all([fetchInvites(), fetchAllPeople()]);
+}
+
 export function updatePerson(
   personId: number,
   fieldsToUpdate: Partial<PersonRequest>
