@@ -3,11 +3,23 @@ import { InviteRow } from "./InviteRow/InviteRow";
 import { Invite, Person, RSVP_Options } from "./types";
 import { fetchAllPeople, fetchInvites } from "./utilities";
 
+type Count = {
+  total: number;
+  confirmed: number;
+  declined: number;
+  noResponse: number;
+};
+
+const initialCount: Count = {
+  total: 0,
+  confirmed: 0,
+  declined: 0,
+  noResponse: 0
+};
+
 export const Overview: React.FC = () => {
   const [invites, setInvites] = useState<Invite[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [confirmedCount, setConfirmedCount] = useState(0);
-  const [declinedCount, setDeclinedCount] = useState(0);
+  const [masterCount, setMasterCount] = useState<Count>(initialCount);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [forceRefresh, setRefresh] = useState(0);
 
@@ -15,23 +27,48 @@ export const Overview: React.FC = () => {
     fetchInvites().then((invites) => setInvites(invites));
 
     fetchAllPeople().then((people: Person[]) => {
-      const totalCount = people.reduce((total, person) => {
+      const realCount: Count = {
+        total: 0,
+        confirmed: 0,
+        declined: 0,
+        noResponse: 0
+      };
+      people.forEach((person) => {
+        console.log(person);
+        realCount.total += 1;
         if (person.allowed_extra) {
-          return total + 2;
+          realCount.total += 1;
         }
-        return total + 1;
-      }, 0);
-      setTotalCount(totalCount);
-      setConfirmedCount(
-        people.filter(
-          (person) => person.rsvp === RSVP_Options.WILL_ATTEND
-        ).length
-      );
-      setDeclinedCount(
-        people.filter(
-          (person) => person.rsvp === RSVP_Options.DECLINE
-        ).length
-      );
+        if (person.rsvp === RSVP_Options.WILL_ATTEND) {
+          realCount.confirmed += 1;
+        }
+        if (
+          person.allowed_extra &&
+          person.extra_confirmed === RSVP_Options.WILL_ATTEND
+        ) {
+          realCount.confirmed += 1;
+        }
+        if (person.rsvp === RSVP_Options.DECLINE) {
+          realCount.declined += 1;
+        }
+        if (
+          person.allowed_extra &&
+          person.extra_confirmed === RSVP_Options.DECLINE
+        ) {
+          realCount.declined += 1;
+        }
+        if (person.rsvp === RSVP_Options.NO_RESPONSE) {
+          realCount.noResponse += 1;
+        }
+        if (
+          person.allowed_extra &&
+          (person.extra_confirmed === RSVP_Options.NO_RESPONSE ||
+            !person.extra_confirmed)
+        ) {
+          realCount.noResponse += 1;
+        }
+      });
+      setMasterCount(realCount);
     });
   }, [forceRefresh]);
 
@@ -47,13 +84,10 @@ export const Overview: React.FC = () => {
   return (
     <main>
       <h1>Current Invite List</h1>
-      <h2>Total Invited: {totalCount}</h2>
-      <h3>Total Confirmed: {confirmedCount}</h3>
-      <h3>Total Decline: {declinedCount}</h3>
-      <h3>
-        Total Not Responded:{" "}
-        {totalCount - confirmedCount - declinedCount}
-      </h3>
+      <h2>Total Invited: {masterCount.total}</h2>
+      <h3>Total Confirmed: {masterCount.confirmed}</h3>
+      <h3>Total Decline: {masterCount.declined}</h3>
+      <h3>Total Not Responded: {masterCount.noResponse}</h3>
       <label htmlFor="search-term">Search Invites: </label>
       <input
         type="text"
